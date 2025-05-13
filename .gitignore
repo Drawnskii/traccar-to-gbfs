@@ -1,0 +1,11 @@
+.env
+
+calendar.txt
+stop_times.txt
+stops.txt
+trips.txt
+
+__pycache__/
+
+data.json
+debug.log
