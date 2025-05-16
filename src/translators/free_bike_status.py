@@ -42,16 +42,11 @@ class FreeBikeStatus:
 
         # Process data from context
         for item_id, data in context.data.items():
-            # Filter for bikes that are likely available and have position data
-            if data.get("status") != "online" or data.get("disabled") is True:
-                continue
-                
-            position = data.get("position")
-            if not position or "latitude" not in position or "longitude" not in position:
+            if "latitude" not in data or "longitude" not in data:
                  logger.debug(f"Skipping bike ID {item_id} due to missing position data.")
                  continue
 
-            last_update_str = data.get("lastUpdate")
+            last_update_str = data.get("deviceTime")
             if not last_update_str:
                 logger.warning(f"Skipping bike ID {item_id} due to missing lastUpdate.")
                 continue
@@ -73,11 +68,11 @@ class FreeBikeStatus:
                  bike_entry = {
                     # NOTE: GBFS requires rotating bike_id after each trip for privacy.
                     # Using uniqueId directly might not comply fully if it's persistent.
-                    "bike_id": data["uniqueId"],
-                    "lat": float(position["latitude"]), # Ensure float type
-                    "lon": float(position["longitude"]), # Ensure float type
+                    "bike_id": str(data["deviceId"]),
+                    "lat": float(data["latitude"]), # Ensure float type
+                    "lon": float(data["longitude"]), # Ensure float type
                     "is_reserved": False, # Assumption: No reservation info available in source data
-                    "is_disabled": data["disabled"],
+                    "is_disabled": False,
                     # Assumption: All vehicles processed here are type 'bicycle'
                     # based on the target feed name and user provided types.
                     "vehicle_type_id": "1",

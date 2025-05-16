@@ -43,13 +43,12 @@ class WsTraccarClient(TraccarSession):
         try:
             async for websocket in connect(self._uri, additional_headers=self._headers):
                 try:
-                    events: Dict[str, Any] = orjson.loads(await websocket.recv())
-                    devices: Dict[str, Any] = orjson.loads(await websocket.recv())
-                    positions: Dict[str, Any] = orjson.loads(await websocket.recv())
+                    while True:
+                        message: Dict[str, Any] = orjson.loads(await websocket.recv())
 
-                    logger.info("Message recived!")
-                    
-                    context.load_data(positions, devices, events)
+                        logger.info("Message recived!")
+                        
+                        context.load_data(message)
                 except ConnectionClosed:
                     logger.info("Connection to Traccar WebSocket closed. Attempting to reconnect...")
                     continue

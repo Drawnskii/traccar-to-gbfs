@@ -105,7 +105,7 @@ def get_vehicle_types():
                     "vehicle_type_id": "2",
                     "form_factor": "scooter",
                     "propulsion_type": "electric",
-                    "name": "Abato Scooter",
+                    "name": "Ambato Scooter",
                     "max_range_meters": 12345
                 },
                 {

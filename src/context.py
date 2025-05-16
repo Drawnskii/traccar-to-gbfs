@@ -44,130 +44,14 @@ class DataContext(metaclass=SingletonMeta):
             61: "63",
         }
 
-    def load_data(self, positions, devices, events):
-        if "devices" in devices:
-            for device in devices["devices"]:
-                self.data[device["id"]] = device
-
-        if "events" in events:
-            for event in events:
-                device_id = event["deviceId"]
-                if device_id in self.data:
-                    self.data[device_id]["event"] = event
-
-        if "positions" in positions:
-            for position in positions["positions"]:
+    def load_data(self, message):
+        if "positions" in message:
+            for position in message["positions"]:
                 device_id = position["deviceId"]
-                if device_id in self.data: 
-                    self.data[device_id]["position"] = position
-
-        # self.test_events()
+                self.data[device_id] = position
         
         # Write to file less frequently, e.g., only for debugging
-        # with open("data.json", "w") as f:
-        #     json.dump(self.data, f, indent=4)
-
-    def test_events(self) -> None:
-        alternate = True
-
-        for data in self.data.values():
-            device_id = data["id"]
-
-            now = datetime.now()
-
-            base_event = {
-                "id": device_id,
-                "deviceId": device_id,
-                "eventTime": now.strftime("%Y-%m-%dT%H:%M:%S.000+00:00"),
-                "positionId": data.get("positionId", 0),
-                "geofenceId": 0,
-                "maintenanceId": 0,
-                "busStopId": 0
-            }
-
-            if alternate:
-                event = {
-                    **base_event,
-                    "type": "alarm",
-                    "attributes": {
-                        "alarm": "geofenceExited"
-                    }
-                }
-            else:
-                event = {
-                    **base_event,
-                    "type": "geofenceExited",
-                    "attributes": {}
-                }
-
-            data["event"] = event
-            
-            alternate = not alternate
-
-
-class GtfsDataContext(metaclass=SingletonMeta):
-    def __init__(self):
-        # Load GTFS data with optimized dtype specifications for memory efficiency
-        self.trips = pd.read_csv(
-            GTFS_PATH / "trips.txt",
-            dtype={
-                'route_id': 'int32',
-                'service_id': 'category',
-                'trip_id': 'str',
-                'trip_headsign': 'category',
-                'direction_id': 'int8',
-                'shape_id': 'category'
-            }
-        )
-        
-        self.stops = pd.read_csv(
-            GTFS_PATH / "stops.txt",
-            dtype={
-                'stop_id': 'str',
-                'stop_name': 'category',
-                'stop_lat': 'float32',
-                'stop_lon': 'float32'
-            }
-        )
-        
-        self.calendar = pd.read_csv(
-            GTFS_PATH / "calendar.txt",
-            dtype={
-                'service_id': 'category',
-                'monday': 'int8',
-                'tuesday': 'int8',
-                'wednesday': 'int8',
-                'thursday': 'int8',
-                'friday': 'int8',
-                'saturday': 'int8',
-                'sunday': 'int8',
-                'start_date': 'int32',
-                'end_date': 'int32'
-            }
-        )
-        
-        self.stop_times = pd.read_csv(
-            GTFS_PATH / "stop_times.txt",
-            dtype={
-                'trip_id': 'str',
-                'arrival_time': 'str',
-                'departure_time': 'str',
-                'stop_id': 'str',
-                'stop_sequence': 'int16'
-            }
-        )
-        
-        # Pre-process stop_times to optimize frequently used queries
-        self._prepare_stop_times_index()
-        
-        logger.info("GTFS data loaded successfully")
-        
-    def _prepare_stop_times_index(self):
-        # Create an index on trip_id for faster lookup
-        self.stop_times.set_index('trip_id', inplace=True)
-        self.stop_times.sort_index(inplace=True)
-        
-        # We'll reset it when needed in specific queries
+        with open("data.json", "w") as f:
+            json.dump(self.data, f, indent=4)
 
 context: DataContext = DataContext()
-gtfs_context: GtfsDataContext = GtfsDataContext()

@@ -12,4 +12,6 @@ FEEDS = [
     {"name": "system_information", "url": f"{BASE_URL}/system-information"},
     {"name": "station_information", "url": f"{BASE_URL}/station-information"},
     {"name": "station_status", "url": f"{BASE_URL}/station-status"},
+    {"name": "free_bike_status", "url": f"{BASE_URL}/free-bike-status"},
+    {"name": "vehicle_types", "url": f"{BASE_URL}/vehicle-types"}
 ]

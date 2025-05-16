@@ -118,6 +118,12 @@ class StationService:
             "is_renting": True,
             "is_returning": True,
             "last_reported": int(time.time()),
+            "vehicle_types_available": [
+                {
+                    "vehicle_type_id": "1",
+                    "count": num_bikes_available
+                }
+            ]
         }
 
     def get_station_status(self) -> List[Dict]:
