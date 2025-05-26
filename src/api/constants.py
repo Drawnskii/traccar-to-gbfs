@@ -7,7 +7,7 @@ SYSTEM_URL = "https://www.ejemplo.ec"
 LICENSE_URL = "https://www.ejemplo.ec/license"
 
 # Feed URLs (these should match the actual routes)
-BASE_URL = "http://localhost:8000/gbfs"
+BASE_URL = "http://localhost:8001/gbfs"
 FEEDS = [
     {"name": "system_information", "url": f"{BASE_URL}/system-information"},
     {"name": "station_information", "url": f"{BASE_URL}/station-information"},

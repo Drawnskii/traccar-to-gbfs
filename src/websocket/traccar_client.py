@@ -13,9 +13,9 @@ logger = logging.getLogger(__name__)
 
 class TraccarSession:
     def __init__(self) -> None:
-        self._url = config["url"]
-        self._email = config["email"]
-        self._password = config["password"]
+        self._url = config["URL"]
+        self._email = config["EMAIL"]
+        self._password = config["PASSWORD"]
         self._cookie: str = self._login().split(';')[0]
 
     def _login(self) -> str:

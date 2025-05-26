@@ -21,7 +21,7 @@ logging.basicConfig(
 async def main() -> None:
     wsc = WsTraccarClient()
     
-    config = Config(app, host="0.0.0.0", port=8000)
+    config = Config(app, host="0.0.0.0", port=8001)
     server = Server(config)
 
     wsc_task = asyncio.create_task(wsc.get_messages())
